@@ -1,5 +1,5 @@
 # Advent of Code 2018
-Solutions of "Advent of Code 2018" in Kotlin
+Solutions for "Advent of Code 2018" in Kotlin
 
 MIT License
 
