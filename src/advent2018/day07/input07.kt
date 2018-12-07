@@ -1,6 +1,7 @@
 package advent2018.day07
 
 const val numWorkers = 5
+const val stepDuration = 60
 
 val input = listOf(
     """Step F must be finished before step P can begin.""",
