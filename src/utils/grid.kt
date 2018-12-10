@@ -11,6 +11,9 @@ data class Coordinates(val row: Int, val column: Int) {
 
     operator fun plus(direction: Coordinates) =
             Coordinates(row + direction.row, column + direction.column)
+
+    operator fun minus(direction: Coordinates) =
+        Coordinates(row - direction.row, column - direction.column)
 }
 
 fun turnInDirection(direction: Int, action: String) = when (action) {
