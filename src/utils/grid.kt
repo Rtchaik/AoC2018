@@ -3,17 +3,17 @@ package utils
 import kotlin.math.abs
 
 //direction 0 = North
-val directions = listOf(Coordinates(-1, 0), Coordinates(0, 1), Coordinates(1, 0), Coordinates(0, -1))
+val directions = listOf(Coordinates(0, 1), Coordinates(1, 0), Coordinates(0, -1), Coordinates(-1, 0))
 val diagonals = listOf(Coordinates(-1, -1), Coordinates(-1, 1), Coordinates(1, 1), Coordinates(1, -1))
 
 
-data class Coordinates(val row: Int, val column: Int) {
+data class Coordinates(val column: Int, val row: Int) {
 
     operator fun plus(direction: Coordinates) =
-            Coordinates(row + direction.row, column + direction.column)
+        Coordinates(column + direction.column, row + direction.row)
 
     operator fun minus(direction: Coordinates) =
-        Coordinates(row - direction.row, column - direction.column)
+        Coordinates(column - direction.column, row - direction.row)
 }
 
 fun turnInDirection(direction: Int, action: String) = when (action) {

@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
 
         (0..maxRow).forEach { row ->
             (0..maxColumn).forEach { column ->
-                val distances = coordinates.map { it.distance(Coordinates(row, column)) }
+                val distances = coordinates.map { it.distance(Coordinates(column, row)) }
                 val minDistance = distances.min()
                 if (distances.filter { it == minDistance }.size == 1) {
                     val idxMinDistance = distances.indexOf(minDistance)

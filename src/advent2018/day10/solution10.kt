@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
             .map { Pair(Coordinates(it[0], it[1]), Coordinates(it[2], it[3])) }.toMutableList()
 
         var height =
-            parsedInput.maxBy { it.first.column }!!.first.column - parsedInput.minBy { it.first.column }!!.first.column
+            parsedInput.maxBy { it.first.row }!!.first.row - parsedInput.minBy { it.first.row }!!.first.row
         var part2 = 0
         var counter = 0
         while (part2 == 0) {
@@ -20,18 +20,18 @@ fun main(args: Array<String>) {
                 parsedInput[idx] = Pair(point.first + point.second, point.second)
             }
             val heightNew =
-                parsedInput.maxBy { it.first.column }!!.first.column - parsedInput.minBy { it.first.column }!!.first.column
+                parsedInput.maxBy { it.first.row }!!.first.row - parsedInput.minBy { it.first.row }!!.first.row
             if (heightNew > height) {
                 parsedInput.forEachIndexed { idx, point ->
                     parsedInput[idx] = Pair(point.first - point.second, point.second)
                 }
-                val minX = parsedInput.minBy { it.first.row }!!.first.row
-                val maxX = parsedInput.maxBy { it.first.row }!!.first.row
-                val minY = parsedInput.minBy { it.first.column }!!.first.column
-                val maxY = parsedInput.maxBy { it.first.column }!!.first.column
+                val minY = parsedInput.minBy { it.first.row }!!.first.row
+                val maxY = parsedInput.maxBy { it.first.row }!!.first.row
+                val minX = parsedInput.minBy { it.first.column }!!.first.column
+                val maxX = parsedInput.maxBy { it.first.column }!!.first.column
                 val grid = (minY..maxY).map { (minX..maxX).map { ' ' }.toMutableList() }
-                parsedInput.forEach { point -> grid[point.first.column - minY][point.first.row - minX] = '#' }
-                for (item in grid) println(item.joinToString(""))
+                parsedInput.forEach { point -> grid[point.first.row - minY][point.first.column - minX] = '#' }
+                for (row in grid) println(row.joinToString(""))
                 part2 = counter
             } else {
                 counter++
