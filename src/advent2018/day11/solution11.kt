@@ -15,10 +15,10 @@ fun main(args: Array<String>) {
         (299 downTo 0).forEach { y ->
             (299 downTo 0).forEach { x ->
                 val maxSide = minOf(300 - x, 300 - y)
-                var sidesSum = 0
+                var sumSides = 0
                 (1..maxSide).forEach { size ->
-                    sidesSum += gridPowers[y + size - 1][x] + gridPowers[y][x + size - 1]
-                    squares[Triple(x + 1, y + 1, size)] = sidesSum +
+                    sumSides += gridPowers[y + size - 1][x] + if (size > 1) gridPowers[y][x + size - 1] else 0
+                    squares[Triple(x + 1, y + 1, size)] = sumSides +
                             squares.getOrDefault(Triple(x + 2, y + 2, size - 1), 0)
                 }
             }
