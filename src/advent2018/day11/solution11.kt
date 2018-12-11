@@ -15,11 +15,10 @@ fun main(args: Array<String>) {
         (299 downTo 0).forEach { y ->
             (299 downTo 0).forEach { x ->
                 val maxSide = minOf(300 - x, 300 - y)
+                var sidesSum = 0
                 (1..maxSide).forEach { size ->
-                    squares[Pair(Pair(x + 1, y + 1), size)] =
-                            gridPowers[y][x] +
-                            (y + 1 until y + size).sumBy { gridPowers[it][x] } +
-                            (x + 1 until x + size).sumBy { gridPowers[y][it] } +
+                    sidesSum += gridPowers[y + size - 1][x] + gridPowers[y][x + size - 1]
+                    squares[Pair(Pair(x + 1, y + 1), size)] = sidesSum +
                             squares.getOrDefault(Pair(Pair(x + 2, y + 2), size - 1), 0)
                 }
             }
