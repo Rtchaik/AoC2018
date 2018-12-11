@@ -11,24 +11,21 @@ fun main(args: Array<String>) {
             }
         }
 
-        val squares = mutableMapOf<Pair<Pair<Int, Int>, Int>, Int>()
+        val squares = mutableMapOf<Triple<Int, Int, Int>, Int>()
         (299 downTo 0).forEach { y ->
             (299 downTo 0).forEach { x ->
                 val maxSide = minOf(300 - x, 300 - y)
                 var sidesSum = 0
                 (1..maxSide).forEach { size ->
                     sidesSum += gridPowers[y + size - 1][x] + gridPowers[y][x + size - 1]
-                    squares[Pair(Pair(x + 1, y + 1), size)] = sidesSum +
-                            squares.getOrDefault(Pair(Pair(x + 2, y + 2), size - 1), 0)
+                    squares[Triple(x + 1, y + 1, size)] = sidesSum +
+                            squares.getOrDefault(Triple(x + 2, y + 2, size - 1), 0)
                 }
             }
         }
 
-        val part1 = squares.filterKeys { it.second == 3 }.maxBy { it.value }!!.key.first.toList().joinToString(",")
-
-        val maxPart2 = squares.maxBy { it.value }!!.key
-        val part2 = (maxPart2.first.toList() + listOf(maxPart2.second)).joinToString(",")
-
+        val part1 = squares.filterKeys { it.third == 3 }.maxBy { it.value }!!.key.toList().dropLast(1).joinToString(",")
+        val part2 = squares.maxBy { it.value }!!.key.toList().joinToString(",")
         println("Part 1: $part1\nPart 2: $part2")
     }
     println("Execution Time = $executionTime ms")
