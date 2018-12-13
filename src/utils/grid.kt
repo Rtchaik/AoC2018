@@ -16,11 +16,11 @@ data class Coordinates(val column: Int, val row: Int) {
         Coordinates(column - direction.column, row - direction.row)
 }
 
-fun turnInDirection(direction: Int, action: String) = when (action) {
-    "straight" -> direction
-    "right" -> (direction + 1) % 4
-    "left" -> if (direction == 0) 3 else direction - 1
-    "back" -> (direction + 2) % 4
+fun turnInDirection(direction: Int, action: Char) = when (action) {
+    'S' -> direction//straight
+    'R' -> (direction + 1) % 4//right
+    'L' -> (direction - 1 + 4) % 4//left
+    'B' -> (direction + 2) % 4//back
     else -> throw IllegalArgumentException("Unrecognized action: $action")
 }
 

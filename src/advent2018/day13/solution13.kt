@@ -23,17 +23,19 @@ fun main(args: Array<String>) {
 
         var part1 = Coordinates(0, 0)
         while (carts.size > 1) {
-            val crashed = mutableSetOf<Int>()
-            (0 until carts.size).forEach { currentIdx ->
-                carts[currentIdx] = makeMove(carts[currentIdx], input)
+            var currentIdx = 0
+            while (currentIdx < carts.size) {
+                carts[currentIdx] =
+                        makeMove(carts[currentIdx], input[carts[currentIdx].first.row][carts[currentIdx].first.column])
                 val nodeCars =
                     carts.mapIndexedNotNull { idx, triple -> if (triple.first == carts[currentIdx].first) idx else null }
                 if (nodeCars.size > 1) {
-                    crashed.addAll(nodeCars)
                     if (part1 == Coordinates(0, 0)) part1 = carts[nodeCars.first()].first
-                }
+                    if (currentIdx == nodeCars.max()) currentIdx--
+                    nodeCars.sortedDescending().forEach { carts.removeAt(it) }
+                } else currentIdx++
             }
-            crashed.sortedDescending().forEach { carts.removeAt(it) }
+            carts.sortWith(compareBy({ it.first.row }, { it.first.column }))
         }
 
         val part2 = carts.first().first
@@ -43,31 +45,20 @@ fun main(args: Array<String>) {
     println("Execution Time = $executionTime ms")
 }
 
-private fun makeMove(cart: Triple<Coordinates, Int, Int>, grid: List<String>) =
-    when (grid[cart.first.row][cart.first.column]) {
-        '+' -> {
-            val intersect = listOf("right", "straight", "left")
-            val newDir = turnInDirection(cart.second, intersect[cart.third])
-            Triple(cart.first + directions[newDir], newDir, (cart.third + 1) % 3)
+private fun makeMove(cart: Triple<Coordinates, Int, Int>, road: Char): Triple<Coordinates, Int, Int> {
+    val newDir = turnInDirection(
+        cart.second, when (road) {
+            '+' -> "RSL"[cart.third]
+            '\\' -> when (cart.second) {
+                1, 3 -> 'L'
+                else -> 'R'
+            }
+            '/' -> when (cart.second) {
+                0, 2 -> 'L'
+                else -> 'R'
+            }
+            else -> 'S'
         }
-        '\\' -> {
-            val newDir = turnInDirection(
-                cart.second, when (cart.second) {
-                    1, 3 -> "left"
-                    else -> "right"
-                }
-            )
-            Triple(cart.first + directions[newDir], newDir, cart.third)
-        }
-        '/' -> {
-            val newDir = turnInDirection(
-                cart.second, when (cart.second) {
-                    0, 2 -> "left"
-                    else -> "right"
-                }
-            )
-            Triple(cart.first + directions[newDir], newDir, cart.third)
-        }
-        else -> Triple(cart.first + directions[turnInDirection(cart.second, "straight")], cart.second, cart.third)
-
-    }
+    )
+    return Triple(cart.first + directions[newDir], newDir, if (road == '+') (cart.third + 1) % 3 else cart.third)
+}
