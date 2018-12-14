@@ -25,14 +25,9 @@ private tailrec fun generateRecipes(
         else recipes.takeLast(input.length + 1).joinToString("").contains(input)
     ) recipes
     else {
-        val elf1Recipe = recipes[elf1Pos]
-        val elf2Recipe = recipes[elf2Pos]
-        val newRecipes = elf1Recipe + elf2Recipe
-        val recipe1 = (newRecipes / 10) % 10
-        if (recipe1 != 0) recipes.add(recipe1)
-        recipes.add(newRecipes % 10)
+        (recipes[elf1Pos] + recipes[elf2Pos]).toString().forEach { recipes.add(it.toString().toInt()) }
         generateRecipes(
             part, recipes,
-            (elf1Pos + elf1Recipe + 1) % recipes.size, (elf2Pos + elf2Recipe + 1) % recipes.size
+            (elf1Pos + recipes[elf1Pos] + 1) % recipes.size, (elf2Pos + recipes[elf2Pos] + 1) % recipes.size
         )
     }
