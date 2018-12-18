@@ -8,20 +8,19 @@ fun main(args: Array<String>) {
         val parsedInput =
             input.map { line -> line.split("""\D+""".toRegex()).filter { it.isNotBlank() }.map { it.toInt() } }
 
-        val part1 = (0..parsedInput.size step 4)
-            .map { idx ->
-                (0..15).map { opcodes(it, parsedInput[idx + 1], parsedInput[idx].toIntArray()) }
-                    .filter { it.second == parsedInput[idx + 2] }.count()
-            }
-            .count { it >= 3 }
-
-        val registersMap = mutableMapOf<Int, Int>()
+        val opcodes = listOf(
+            "addr", "addi", "mulr", "muli", "banr", "bani", "borr", "bori",
+            "setr", "seti", "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"
+        )
         val processedInput = (0..parsedInput.size step 4)
             .map { idx ->
                 parsedInput[idx + 1][0] to
-                        (0..15).map { opcodes(it, parsedInput[idx + 1], parsedInput[idx].toIntArray()) }
+                        opcodes.map { opcodes(it, parsedInput[idx + 1], parsedInput[idx].toIntArray()) }
                             .filter { it.second == parsedInput[idx + 2] }.toMutableList()
             }.toMutableList()
+        val part1 = processedInput.count { it.second.size >= 3 }
+
+        val registersMap = mutableMapOf<Int, String>()
         while (processedInput.isNotEmpty()) {
             processedInput.filter { it.second.size == 1 }.map { it.first to it.second[0].first }.distinct()
                 .forEach { pair ->
@@ -30,35 +29,34 @@ fun main(args: Array<String>) {
                     processedInput.forEach { item -> item.second.removeIf { it.first == pair.second } }
                 }
         }
-
         var part2 = (0..3).map { 0 }
         testProg.map { line -> line.split("""\s""".toRegex()).map { it.toInt() } }
-            .forEach { part2 = opcodes(registersMap.getOrDefault(it[0], 0), it, part2.toIntArray()).second }
+            .forEach { part2 = opcodes(registersMap.getOrDefault(it[0], ""), it, part2.toIntArray()).second }
 
         println("Part 1: $part1\nPart 2: ${part2[0]}")
     }
     println("Execution Time = $executionTime ms")
 }
 
-private fun opcodes(code: Int, instruction: List<Int>, registers: IntArray): Pair<Int, List<Int>> {
+private fun opcodes(code: String, instruction: List<Int>, registers: IntArray): Pair<String, List<Int>> {
     registers[instruction[3]] = when (code) {
-        0 -> registers[instruction[1]] + registers[instruction[2]]//addr
-        1 -> registers[instruction[1]] + instruction[2]//addi
-        2 -> registers[instruction[1]] * registers[instruction[2]]//mulr
-        3 -> registers[instruction[1]] * instruction[2]//muli
-        4 -> registers[instruction[1]] and registers[instruction[2]]//banr
-        5 -> registers[instruction[1]] and instruction[2]//bani
-        6 -> registers[instruction[1]] or registers[instruction[2]]//borr
-        7 -> registers[instruction[1]] or instruction[2]//bori
-        8 -> registers[instruction[1]]//setr
-        9 -> instruction[1]//seti
-        10 -> if (instruction[1] > registers[instruction[2]]) 1 else 0//gtir
-        11 -> if (registers[instruction[1]] > instruction[2]) 1 else 0//gtri
-        12 -> if (registers[instruction[1]] > registers[instruction[2]]) 1 else 0//gtrr
-        13 -> if (instruction[1] == registers[instruction[2]]) 1 else 0//eqir
-        14 -> if (registers[instruction[1]] == instruction[2]) 1 else 0//eqri
-        15 -> if (registers[instruction[1]] == registers[instruction[2]]) 1 else 0//eqrr
-        else -> registers[instruction[3]]
+        "addr" -> registers[instruction[1]] + registers[instruction[2]]
+        "addi" -> registers[instruction[1]] + instruction[2]
+        "mulr" -> registers[instruction[1]] * registers[instruction[2]]
+        "muli" -> registers[instruction[1]] * instruction[2]
+        "banr" -> registers[instruction[1]] and registers[instruction[2]]
+        "bani" -> registers[instruction[1]] and instruction[2]
+        "borr" -> registers[instruction[1]] or registers[instruction[2]]
+        "bori" -> registers[instruction[1]] or instruction[2]
+        "setr" -> registers[instruction[1]]
+        "seti" -> instruction[1]
+        "gtir" -> if (instruction[1] > registers[instruction[2]]) 1 else 0
+        "gtri" -> if (registers[instruction[1]] > instruction[2]) 1 else 0
+        "gtrr" -> if (registers[instruction[1]] > registers[instruction[2]]) 1 else 0
+        "eqir" -> if (instruction[1] == registers[instruction[2]]) 1 else 0
+        "eqri" -> if (registers[instruction[1]] == instruction[2]) 1 else 0
+        "eqrr" -> if (registers[instruction[1]] == registers[instruction[2]]) 1 else 0
+        else -> throw IllegalArgumentException("Wrong opcode")
     }
     return code to registers.toList()
 }
