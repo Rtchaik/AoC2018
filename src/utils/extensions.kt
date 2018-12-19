@@ -30,8 +30,8 @@ fun Long.factorial() = if (this == 0L) 1L else (1L..this).reduce { acc, l -> acc
 
 fun divisorsList(number: Int): List<Int> {
     val divisors = mutableListOf<Int>()
-    val step = if (number % 2 == 0) 1 else 2
-    for (i in 1..Math.sqrt(number.toDouble()).toInt() step step) if (number % i == 0) divisors.add(i)
-    for (i in 0 until divisors.size) divisors.add(number / divisors[i])
+    (1..Math.sqrt(number.toDouble()).toInt() step if (number % 2 == 0) 1 else 2)
+        .forEach { if (number % it == 0) divisors.add(it) }
+    (0 until divisors.size).forEach { divisors.add(number / divisors[it]) }
     return divisors.distinct()
 }

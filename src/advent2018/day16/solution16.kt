@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
             .map { idx ->
                 parsedInput[idx + 1][0] to
                         opcodes.map { opcodes(it, parsedInput[idx + 1].drop(1), parsedInput[idx].toIntArray()) }
-                            .filter { it.second == parsedInput[idx + 2] }.toMutableList()
+                            .filter { it.second.toList() == parsedInput[idx + 2] }.toMutableList()
             }.toMutableList()
         val part1 = processedInput.count { it.second.size >= 3 }
 
@@ -29,16 +29,16 @@ fun main(args: Array<String>) {
                     processedInput.forEach { item -> item.second.removeIf { it.first == pair.second } }
                 }
         }
-        var part2 = (0..3).map { 0 }
+        var part2 = (0..3).map { 0 }.toIntArray()
         testProg.map { line -> line.split("""\s""".toRegex()).map { it.toInt() } }
-            .forEach { part2 = opcodes(registersMap.getOrDefault(it[0], ""), it.drop(1), part2.toIntArray()).second }
+            .forEach { part2 = opcodes(registersMap.getOrDefault(it[0], ""), it.drop(1), part2).second }
 
         println("Part 1: $part1\nPart 2: ${part2[0]}")
     }
     println("Execution Time = $executionTime ms")
 }
 
-fun opcodes(code: String, instruction: List<Int>, registers: IntArray): Pair<String, List<Int>> {
+fun opcodes(code: String, instruction: List<Int>, registers: IntArray): Pair<String, IntArray> {
     registers[instruction[2]] = when (code) {
         "addr" -> registers[instruction[0]] + registers[instruction[1]]
         "addi" -> registers[instruction[0]] + instruction[1]
@@ -58,5 +58,5 @@ fun opcodes(code: String, instruction: List<Int>, registers: IntArray): Pair<Str
         "eqrr" -> if (registers[instruction[0]] == registers[instruction[1]]) 1 else 0
         else -> throw IllegalArgumentException("Wrong opcode")
     }
-    return code to registers.toList()
+    return code to registers
 }
