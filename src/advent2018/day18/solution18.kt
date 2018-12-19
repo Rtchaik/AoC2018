@@ -28,13 +28,13 @@ fun main(args: Array<String>) {
 private fun calculateResources(currentMap: List<String>) =
     currentMap.sumBy { row -> row.count { it == '|' } } * currentMap.sumBy { row -> row.count { it == '#' } }
 
-private fun passMinute(lumberArea: List<String>): List<String> {
-    val newArea = (0 until lumberArea.size).map { (0 until lumberArea[0].length).map { ' ' }.toMutableList() }
-    lumberArea.forEachIndexed { rowIdx, row ->
+private fun passMinute(oldArea: List<String>): List<String> {
+    val newArea = (0 until oldArea.size).map { (0 until oldArea[0].length).map { ' ' }.toCharArray() }
+    oldArea.forEachIndexed { rowIdx, row ->
         row.forEachIndexed { columnIdx, char ->
             val adjacent = (directions + diagonals).map { it + Coordinates(columnIdx, rowIdx) }
-                .filter { it.row in 0 until lumberArea.size && it.column in 0 until row.length }
-                .map { lumberArea[it.row][it.column] }
+                .filter { it.row in 0 until oldArea.size && it.column in 0 until row.length }
+                .map { oldArea[it.row][it.column] }
             newArea[rowIdx][columnIdx] = when (char) {
                 '.' -> if (adjacent.count { it == '|' } >= 3) '|' else '.'
                 '|' -> if (adjacent.count { it == '#' } >= 3) '#' else '|'

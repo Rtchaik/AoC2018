@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
         val processedInput = (0..parsedInput.size step 4)
             .map { idx ->
                 parsedInput[idx + 1][0] to
-                        opcodes.map { opcodes(it, parsedInput[idx + 1], parsedInput[idx].toIntArray()) }
+                        opcodes.map { opcodes(it, parsedInput[idx + 1].drop(1), parsedInput[idx].toIntArray()) }
                             .filter { it.second == parsedInput[idx + 2] }.toMutableList()
             }.toMutableList()
         val part1 = processedInput.count { it.second.size >= 3 }
@@ -31,31 +31,31 @@ fun main(args: Array<String>) {
         }
         var part2 = (0..3).map { 0 }
         testProg.map { line -> line.split("""\s""".toRegex()).map { it.toInt() } }
-            .forEach { part2 = opcodes(registersMap.getOrDefault(it[0], ""), it, part2.toIntArray()).second }
+            .forEach { part2 = opcodes(registersMap.getOrDefault(it[0], ""), it.drop(1), part2.toIntArray()).second }
 
         println("Part 1: $part1\nPart 2: ${part2[0]}")
     }
     println("Execution Time = $executionTime ms")
 }
 
-private fun opcodes(code: String, instruction: List<Int>, registers: IntArray): Pair<String, List<Int>> {
-    registers[instruction[3]] = when (code) {
-        "addr" -> registers[instruction[1]] + registers[instruction[2]]
-        "addi" -> registers[instruction[1]] + instruction[2]
-        "mulr" -> registers[instruction[1]] * registers[instruction[2]]
-        "muli" -> registers[instruction[1]] * instruction[2]
-        "banr" -> registers[instruction[1]] and registers[instruction[2]]
-        "bani" -> registers[instruction[1]] and instruction[2]
-        "borr" -> registers[instruction[1]] or registers[instruction[2]]
-        "bori" -> registers[instruction[1]] or instruction[2]
-        "setr" -> registers[instruction[1]]
-        "seti" -> instruction[1]
-        "gtir" -> if (instruction[1] > registers[instruction[2]]) 1 else 0
-        "gtri" -> if (registers[instruction[1]] > instruction[2]) 1 else 0
-        "gtrr" -> if (registers[instruction[1]] > registers[instruction[2]]) 1 else 0
-        "eqir" -> if (instruction[1] == registers[instruction[2]]) 1 else 0
-        "eqri" -> if (registers[instruction[1]] == instruction[2]) 1 else 0
-        "eqrr" -> if (registers[instruction[1]] == registers[instruction[2]]) 1 else 0
+fun opcodes(code: String, instruction: List<Int>, registers: IntArray): Pair<String, List<Int>> {
+    registers[instruction[2]] = when (code) {
+        "addr" -> registers[instruction[0]] + registers[instruction[1]]
+        "addi" -> registers[instruction[0]] + instruction[1]
+        "mulr" -> registers[instruction[0]] * registers[instruction[1]]
+        "muli" -> registers[instruction[0]] * instruction[1]
+        "banr" -> registers[instruction[0]] and registers[instruction[1]]
+        "bani" -> registers[instruction[0]] and instruction[1]
+        "borr" -> registers[instruction[0]] or registers[instruction[1]]
+        "bori" -> registers[instruction[0]] or instruction[1]
+        "setr" -> registers[instruction[0]]
+        "seti" -> instruction[0]
+        "gtir" -> if (instruction[0] > registers[instruction[1]]) 1 else 0
+        "gtri" -> if (registers[instruction[0]] > instruction[1]) 1 else 0
+        "gtrr" -> if (registers[instruction[0]] > registers[instruction[1]]) 1 else 0
+        "eqir" -> if (instruction[0] == registers[instruction[1]]) 1 else 0
+        "eqri" -> if (registers[instruction[0]] == instruction[1]) 1 else 0
+        "eqrr" -> if (registers[instruction[0]] == registers[instruction[1]]) 1 else 0
         else -> throw IllegalArgumentException("Wrong opcode")
     }
     return code to registers.toList()
