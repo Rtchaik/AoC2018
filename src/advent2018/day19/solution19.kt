@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
         val boundReg = input[0].takeLast(1).toInt()
 
         val part1 = runProgram(instructions, boundReg)[0]
-        val part2 = divisorsList(runProgram(instructions, boundReg, 1).max()!!).sum()//my input fun result: 10551425
+        val part2 = divisorsList(runProgram(instructions, boundReg, 1).max()!!).sum()//my input runProgram result: 10551425
         println("Part 1: $part1\nPart 2: $part2")
     }
     println("Execution Time = $executionTime ms")
