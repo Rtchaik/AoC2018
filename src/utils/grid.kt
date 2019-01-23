@@ -25,3 +25,5 @@ fun turnInDirection(direction: Int, action: Char) = when (action) {
 }
 
 fun Coordinates.distance(target: Coordinates) = abs(this.row - target.row) + abs(this.column - target.column)
+
+fun distance(star1: List<Int>, star2: List<Int>) = (0 until star1.size).sumBy { abs(star1[it] - star2[it]) }
